@@ -73,7 +73,7 @@ public class DateUtilTest {
 
 	@Test
 	public void beginAndEndTest() {
-		String dateStr = "2017-03-01 22:33:23";
+		String dateStr = "2017-03-01 00:33:23";
 		Date date = DateUtil.parse(dateStr);
 
 		// 一天的开始
@@ -82,6 +82,12 @@ public class DateUtilTest {
 		// 一天的结束
 		Date endOfDay = DateUtil.endOfDay(date);
 		Assert.assertEquals("2017-03-01 23:59:59", endOfDay.toString());
+	}
+
+	@Test
+	public void endOfDayTest() {
+		final DateTime parse = DateUtil.parse("2020-05-31 00:00:00");
+		Assert.assertEquals("2020-05-31 23:59:59", DateUtil.endOfDay(parse).toString());
 	}
 
 	@Test
@@ -220,9 +226,15 @@ public class DateUtilTest {
 
 	@Test
 	public void formatChineseDateTest() {
-		String formatChineseDate = DateUtil.formatChineseDate(DateUtil.parse("2018-02-24"), true);
+		String formatChineseDate = DateUtil.formatChineseDate(DateUtil.parse("2018-02-24"), true, false);
 		Assert.assertEquals("二〇一八年二月二十四日", formatChineseDate);
 	}
+	
+    @Test
+    public void formatChineseDateTimeTest() {
+        String formatChineseDateTime = DateUtil.formatChineseDate(DateUtil.parse("2018-02-24 12:13:14"), true, true);
+        Assert.assertEquals("二〇一八年二月二十四日一十二时一十三分一十四秒", formatChineseDateTime);
+    }	
 
 	@Test
 	public void formatBetweenTest() {
@@ -582,6 +594,14 @@ public class DateUtilTest {
 	}
 
 	@Test
+	public void endOfQuarterTest() {
+		Date date = DateUtil.endOfQuarter(
+				DateUtil.parse("2020-05-31 00:00:00"));
+
+		Assert.assertEquals("2020-06-30 23:59:59", DateUtil.format(date,"yyyy-MM-dd HH:mm:ss"));
+	}
+
+	@Test
 	public void endOfWeekTest() {
 		// 周日
 		DateTime now = DateUtil.parse("2019-09-15 13:00");
@@ -731,7 +751,7 @@ public class DateUtilTest {
 		String strDate1 = DateUtil.formatLocalDateTime(ldt);
 		Assert.assertEquals(strDate, strDate1);
 		
-		String strDate2 = "2019年12月01日 17:02:30.111";
+		String strDate2 = "2019-12-01 17:02:30.111";
 		ldt = DateUtil.parseLocalDateTime(strDate2, DatePattern.NORM_DATETIME_MS_PATTERN);
 		strDate1 = DateUtil.format(ldt, DatePattern.NORM_DATETIME_PATTERN);
 		Assert.assertEquals(strDate, strDate1);
