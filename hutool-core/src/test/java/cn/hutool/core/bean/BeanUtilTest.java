@@ -4,6 +4,7 @@ import cn.hutool.core.annotation.Alias;
 import cn.hutool.core.bean.copier.CopyOptions;
 import cn.hutool.core.bean.copier.ValueProvider;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.lang.Console;
 import cn.hutool.core.map.MapUtil;
 import lombok.Data;
 import lombok.Getter;
@@ -16,8 +17,11 @@ import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.UUID;
 
@@ -76,7 +80,7 @@ public class BeanUtilTest {
 	}
 
 	@Test
-	public void toBeanTest(){
+	public void toBeanTest() {
 		SubPerson person = new SubPerson();
 		person.setAge(14);
 		person.setOpenid("11213232");
@@ -95,7 +99,7 @@ public class BeanUtilTest {
 	 * 忽略转换错误测试
 	 */
 	@Test
-	public void toBeanIgnoreErrorTest(){
+	public void toBeanIgnoreErrorTest() {
 		HashMap<String, Object> map = CollUtil.newHashMap();
 		map.put("name", "Joe");
 		// 错误的类型，此处忽略
@@ -372,7 +376,7 @@ public class BeanUtilTest {
 	@Getter
 	@Setter
 	public static class Person {
-		private  String name;
+		private String name;
 		private int age;
 		private String openid;
 	}
@@ -384,6 +388,7 @@ public class BeanUtilTest {
 		private int age;
 		private String openid;
 	}
+
 	public static class Person2 {
 
 		public Person2(String name, int age, String openid) {
@@ -445,9 +450,9 @@ public class BeanUtilTest {
 		Assert.assertEquals(info.getBookID(), entity.getBookId());
 		Assert.assertEquals(info.getCode(), entity.getCode2());
 	}
-	
+
 	@Test
-	public void copyBeanTest(){
+	public void copyBeanTest() {
 		Food info = new Food();
 		info.setBookID("0");
 		info.setCode("123");
@@ -473,14 +478,14 @@ public class BeanUtilTest {
 	}
 
 	@Test
-	public void setPropertiesTest(){
+	public void setPropertiesTest() {
 		Map<String, Object> resultMap = MapUtil.newHashMap();
 		BeanUtil.setProperty(resultMap, "codeList[0].name", "张三");
 		Assert.assertEquals("{codeList={0={name=张三}}}", resultMap.toString());
 	}
 
 	@Test
-	public void beanCopyTest(){
+	public void beanCopyTest() {
 		final Station station = new Station();
 		station.setId(123456L);
 
@@ -499,7 +504,38 @@ public class BeanUtilTest {
 	}
 
 	@Data
-	public static class Entity<T>{
+	public static class Entity<T> {
 		private T id;
+	}
+
+	@Test
+	public void toMapTest() {
+		// 测试转map的时候返回key
+		String name = null;
+		PrivilegeIClassification a = new PrivilegeIClassification();
+		a.setId("1");
+		a.setName("2");
+		a.setCode("3");
+		 a.setCreateTime(new Date());
+		a.setSortOrder(9L);
+
+		Map<String, Object> f = BeanUtil.beanToMap(
+				a,
+				new LinkedHashMap<>(),
+				false,
+				key -> Arrays.asList("id", "name", "code", "sortOrder").contains(key) ? key : null);
+		Assert.assertFalse(f.containsKey(null));
+	}
+
+	@Data
+	public static class PrivilegeIClassification implements Serializable {
+		private static final long serialVersionUID = 1L;
+
+		private String id;
+		private String name;
+		private String code;
+		private Long rowStatus;
+		private Long sortOrder;
+		private Date createTime;
 	}
 }

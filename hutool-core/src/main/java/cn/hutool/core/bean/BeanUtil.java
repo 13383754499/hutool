@@ -166,17 +166,17 @@ public class BeanUtil {
 	 * @since 3.1.2
 	 */
 	public static BeanDesc getBeanDesc(Class<?> clazz) {
-		return BeanDescCache.INSTANCE.getBeanDesc(clazz, ()-> new BeanDesc(clazz));
+		return BeanDescCache.INSTANCE.getBeanDesc(clazz, () -> new BeanDesc(clazz));
 	}
 
 	/**
 	 * 遍历Bean的属性
 	 *
-	 * @param clazz Bean类
+	 * @param clazz  Bean类
 	 * @param action 每个元素的处理类
 	 * @since 5.4.2
 	 */
-	public static void descForEach(Class<?> clazz, Consumer<? super PropDesc> action){
+	public static void descForEach(Class<?> clazz, Consumer<? super PropDesc> action) {
 		getBeanDesc(clazz).getProps().forEach(action);
 	}
 
@@ -211,7 +211,7 @@ public class BeanUtil {
 	 * @throws BeanException 获取属性异常
 	 */
 	public static Map<String, PropertyDescriptor> getPropertyDescriptorMap(Class<?> clazz, boolean ignoreCase) throws BeanException {
-		return BeanInfoCache.INSTANCE.getPropertyDescriptorMap(clazz, ignoreCase, ()-> internalGetPropertyDescriptorMap(clazz, ignoreCase));
+		return BeanInfoCache.INSTANCE.getPropertyDescriptorMap(clazz, ignoreCase, () -> internalGetPropertyDescriptorMap(clazz, ignoreCase));
 	}
 
 	/**
@@ -618,7 +618,7 @@ public class BeanUtil {
 	 * @param bean            bean对象
 	 * @param targetMap       目标的Map
 	 * @param ignoreNullValue 是否忽略值为空的字段
-	 * @param keyEditor       属性字段（Map的key）编辑器，用于筛选、编辑key
+	 * @param keyEditor       属性字段（Map的key）编辑器，用于筛选、编辑key，如果这个Editor返回null则忽略这个字段
 	 * @return Map
 	 * @since 4.0.5
 	 */
@@ -797,7 +797,7 @@ public class BeanUtil {
 			if (ModifierUtil.isStatic(field)) {
 				continue;
 			}
-			if ((false == ArrayUtil.contains(ignoreFiledNames, field.getName()))//
+			if ((false == ArrayUtil.contains(ignoreFiledNames, field.getName()))
 					&& null == ReflectUtil.getFieldValue(bean, field)) {
 				return true;
 			}

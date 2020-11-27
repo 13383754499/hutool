@@ -164,6 +164,7 @@ public class StrUtilTest {
 		Assert.assertEquals(-1, StrUtil.lastIndexOfIgnoreCase("aabaabaa", "B", -1));
 		Assert.assertEquals(2, StrUtil.lastIndexOfIgnoreCase("aabaabaa", "", 2));
 		Assert.assertEquals(3, StrUtil.lastIndexOfIgnoreCase("abc", "", 9));
+		Assert.assertEquals(0, StrUtil.lastIndexOfIgnoreCase("AAAcsd", "aaa"));
 	}
 
 	@Test
@@ -433,6 +434,26 @@ public class StrUtilTest {
 	}
 
 	@Test
+	public void subBetweenAllTest3() {
+		String src1 = "'abc'and'123'";
+		String[] strings = StrUtil.subBetweenAll(src1, "'", "'");
+		Assert.assertEquals(2, strings.length);
+		Assert.assertEquals("abc", strings[0]);
+		Assert.assertEquals("123", strings[1]);
+
+		String src2 = "'abc''123'";
+		strings = StrUtil.subBetweenAll(src2, "'", "'");
+		Assert.assertEquals(2, strings.length);
+		Assert.assertEquals("abc", strings[0]);
+		Assert.assertEquals("123", strings[1]);
+
+		String src3 = "'abc'123'";
+		strings = StrUtil.subBetweenAll(src3, "'", "'");
+		Assert.assertEquals(1, strings.length);
+		Assert.assertEquals("abc", strings[0]);
+	}
+
+	@Test
 	public void briefTest() {
 		String str = RandomUtil.randomString(1000);
 		int maxLength = RandomUtil.randomInt(1000);
@@ -464,5 +485,11 @@ public class StrUtilTest {
 
 		Assert.assertTrue(StrUtil.startWith(a, b));
 		Assert.assertFalse(StrUtil.startWithIgnoreEquals(a, b));
+	}
+
+	@Test
+	public void indexedFormatTest() {
+		final String ret = StrUtil.indexedFormat("this is {0} for {1}", "a", 1000);
+		Assert.assertEquals("this is a for 1,000", ret);
 	}
 }

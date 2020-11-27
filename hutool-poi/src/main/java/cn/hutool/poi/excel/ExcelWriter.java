@@ -393,6 +393,15 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
 	}
 
 	/**
+	 * 定位到最后一行的后边，用于追加数据
+	 * @return this
+	 * @since 5.5.0
+	 */
+	public ExcelWriter setCurrentRowToEnd(){
+		return setCurrentRow(getRowCount());
+	}
+
+	/**
 	 * 跳过当前行
 	 *
 	 * @return this
@@ -965,7 +974,7 @@ public class ExcelWriter extends ExcelBase<ExcelWriter> {
 	 * @param y Y坐标，从0计数，即行号
 	 * @return {@link CellStyle}
 	 * @since 4.0.9
-	 * @deprecated 请使用{@link #createCellStyle(int, int)}
+	 * @deprecated 请使用 {@link #createCellStyle(int, int)}
 	 */
 	@Deprecated
 	public CellStyle createStyleForCell(int x, int y) {

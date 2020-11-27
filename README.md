@@ -48,6 +48,10 @@
 
 -------------------------------------------------------------------------------
 
+[**English Documentation**](README-EN.md)
+
+-------------------------------------------------------------------------------
+
 ## 简介
 Hutool是一个小而全的Java工具类库，通过静态方法封装，降低相关API的学习成本，提高工作效率，使Java拥有函数式语言般的优雅，让Java语言也可以“甜甜的”。
 
@@ -119,21 +123,21 @@ Hutool的存在就是为了减少代码搜索成本，避免网络上参差不�
 <dependency>
     <groupId>cn.hutool</groupId>
     <artifactId>hutool-all</artifactId>
-    <version>5.4.6</version>
+    <version>5.5.1</version>
 </dependency>
 ```
 
 ### Gradle
 ```
-compile 'cn.hutool:hutool-all:5.4.6'
+compile 'cn.hutool:hutool-all:5.5.1'
 ```
 
 ### 非Maven项目
 
 点击以下任一链接，下载`hutool-all-X.X.X.jar`即可：
 
-- [Maven中央库1](https://repo1.maven.org/maven2/cn/hutool/hutool-all/5.4.6/)
-- [Maven中央库2](http://repo2.maven.org/maven2/cn/hutool/hutool-all/5.4.6/)
+- [Maven中央库1](https://repo1.maven.org/maven2/cn/hutool/hutool-all/5.5.1/)
+- [Maven中央库2](http://repo2.maven.org/maven2/cn/hutool/hutool-all/5.5.1/)
 
 > 注意
 > Hutool 5.x支持JDK8+，对Android平台没有测试，不能保证所有工具类或工具方法可用。
@@ -197,3 +201,9 @@ Hutool欢迎任何人为Hutool添砖加瓦，贡献代码，不过维护者是�
 点击以下链接，将页面拉到最下方点击“捐赠”即可。
 
 [前往捐赠](https://gitee.com/loolly/hutool)
+
+## 公众号
+
+欢迎关注Hutool合作的公众号。
+
+![Java2B](https://cdn.jsdelivr.net/gh/looly/hutool-site/images/qrcode.jpg)

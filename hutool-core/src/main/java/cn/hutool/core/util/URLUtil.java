@@ -707,7 +707,9 @@ public class URLUtil {
 			//noinspection ConstantConditions
 			body = body.replaceAll("^[\\\\/]+", StrUtil.EMPTY);
 			// 替换多个\或/为单个/
-			body = body.replace("\\", "/").replaceAll("//+", "/");
+			body = body.replace("\\", "/");
+			//issue#I25MZL，双斜杠在URL中是允许存在的，不做替换
+			//.replaceAll("//+", "/");
 		}
 
 		final int pathSepIndex = StrUtil.indexOf(body, '/');
@@ -782,7 +784,7 @@ public class URLUtil {
 	 * @since 5.3.11
 	 */
 	public static String getDataUriBase64(String mimeType, String data) {
-		return getDataUri(mimeType, null, "BASE64", data);
+		return getDataUri(mimeType, null, "base64", data);
 	}
 
 	/**
