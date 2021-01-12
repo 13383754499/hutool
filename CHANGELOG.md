@@ -3,6 +3,43 @@
 
 -------------------------------------------------------------------------------------------------------------
 
+# 5.5.7 (2021-01-07)
+
+### 新特性
+* 【core   】     DynaBean.create增加重载方法（pr#245@Gitee）
+* 【core   】     IdcardUtil增加重载是否忽略大小写（issue#1348@Github）
+* 【poi    】     SheetRidReader增加getRidByIndex方法（issue#1342@Github）
+* 【extra  】     MailAccount增加sslProtocols配置项（issue#IZN95@Gitee）
+* 【extra  】     MailUtil增加getSession方法
+* 【setting】     新增setByGroup和putByGroup，set和put标记为过期（issue#I2C42H@Gitee）
+* 【crypto 】     修改SymmetricAlgorithm注释（issue#1360@Github）
+* 【all    】     pom中将META-INF/maven下全部exclude（pr#1355@Github）
+* 【http   】     SimpleServer中增加addFilter等方法，并使用全局线程池
+* 【core   】     CollUtil.forEach 增加null 判断（pr#250@Gitee）
+* 【extra  】     FtpConfig增加serverLanguageCode和systemKey配置,Ftp.download增加重载（pr#248@Gitee）
+
+### Bug修复
+* 【core   】     修复CsvReader读取双引号未转义问题（issue#I2BMP1@Gitee）
+* 【json   】     JSONUtil.parse修复config无效问题（issue#1363@Github）
+* 【http   】     修复SimpleServer返回响应内容Content-Length不正确的问题（issue#1358@Github）
+* 【http   】     修复Https请求部分环境下报证书验证异常问题（issue#I2C1BZ@Github）
+
+-------------------------------------------------------------------------------------------------------------
+
+# 5.5.6 (2020-12-29)
+
+### 新特性
+* 【core   】     手机号工具类 座机正则表达式统一管理（pr#243@Gitee）
+* 【extra  】     Mail增加setDebugOutput方法（issue#1335@Gitee）
+
+### Bug修复
+* 【core   】     修复ZipUtil.unzip从流解压关闭问题（issue#I2B0S1@Gitee）
+* 【poi    】     修复Excel07Writer写出表格错乱问题（issue#I2B57B@Gitee）
+* 【poi    】     修复SheetRidReader读取字段错误问题（issue#1342@Github）
+* 【core   】     修复FileUtil.getMimeType不支持css和js（issue#1341@Github）
+
+-------------------------------------------------------------------------------------------------------------
+
 # 5.5.5 (2020-12-27)
 
 ### 新特性
@@ -26,6 +63,7 @@
 * 【core   】     修复强依赖了POI的问题（issue#1336@Github）
 
 -------------------------------------------------------------------------------------------------------------
+
 # 5.5.4 (2020-12-16)
 
 ### 新特性
