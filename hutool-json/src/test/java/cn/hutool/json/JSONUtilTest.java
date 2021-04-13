@@ -11,6 +11,7 @@ import cn.hutool.json.test.bean.UserC;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -173,10 +174,35 @@ public class JSONUtilTest {
 	}
 
 	@Test
+	public void setStripTrailingZerosTest() {
+		// 默认去除多余的0
+		final JSONObject jsonObjectDefault = JSONUtil.createObj()
+				.set("test2", 12.00D);
+		Assert.assertEquals("{\"test2\":12}", jsonObjectDefault.toString());
+
+		// 不去除多余的0
+		final JSONObject jsonObject = JSONUtil.createObj(JSONConfig.create().setStripTrailingZeros(false))
+				.set("test2", 12.00D);
+		Assert.assertEquals("{\"test2\":12.0}", jsonObject.toString());
+
+		// 去除多余的0
+		jsonObject.getConfig().setStripTrailingZeros(true);
+		Assert.assertEquals("{\"test2\":12}", jsonObject.toString());
+	}
+
+	@Test
 	public void parseObjTest() {
 		// 测试转义
 		final JSONObject jsonObject = JSONUtil.parseObj("{\n" +
 				"    \"test\": \"\\\\地库地库\",\n" +
 				"}");
+	}
+
+	@Test
+	public void sqlExceptionTest(){
+		//https://github.com/looly/hutool/issues/1399
+		// SQLException实现了Iterable接口，默认是遍历之，会栈溢出，修正后只返回string
+		final JSONObject set = JSONUtil.createObj().set("test", new SQLException("test"));
+		Assert.assertEquals("{\"test\":\"java.sql.SQLException: test\"}", set.toString());
 	}
 }

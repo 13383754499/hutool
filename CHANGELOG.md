@@ -3,7 +3,127 @@
 
 -------------------------------------------------------------------------------------------------------------
 
-# 5.5.8 (2021-01-25)
+# 5.6.3 (2021-04-10)
+
+### 新特性
+* 【core   】     修改数字转换的实现，增加按照指定端序转换（pr#1492@Github）
+* 【core   】     修改拆分byte数组时最后一组长度的规则（pr#1494@Github）
+* 【core   】     新增根据日期获取节气（pr#1496@Github）
+* 【core   】     mapToBean()添加对布尔值is前缀的识别（pr#294@Gitee）
+* 【core   】     农历十月十一月改为寒月和冬月（pr#301@Gitee）
+* 【core   】     增加港澳台电话正则（pr#301@Gitee）
+* 【core   】     增加银行卡号脱敏（pr#301@Gitee）
+* 【cache  】     使用LongAddr代替AtomicLong（pr#301@Gitee）
+* 【cache  】     EnumUtil使用LinkedHashMap（pr#304@Gitee）
+* 【crypto 】     SymmetricCrypto支持大量数据加密解密（pr#1497@Gitee）
+* 【http   】     SoapClient增加针对不同协议的头信息（pr#305@Gitee）
+* 【http   】     HttpRequest支持307、308状态码识别（issue#1504@Github）
+* 【core   】     CharUtil.isBlankChar增加\u0000判断（pr#1505@Github）
+* 【extra  】     添加Houbb Pinyin支持（pr#1506@Github）
+* 【core   】     添加LambdaUtil（pr#295@Gitee）
+* 【core   】     添加StrPool和CharPool
+* 【extra  】     CglibUtil增加toBean和fillBean方法
+* 【db     】     增加DriverNamePool
+
+### Bug修复
+* 【core   】     修复Validator.isUrl()传空返回true（issue#I3ETTY@Gitee）
+* 【db     】     修复数据库driver根据url的判断识别错误问题（issue#I3EWBI@Gitee）
+* 【json   】     修复JSONStrFormatter换行多余空行问题（issue#I3FA8B@Gitee）
+* 【core   】     修复UrlPath中的+被转义为空格%20的问题（issue#1501@Github）
+* 【core   】     修复DateUtil.parse方法对UTC时间毫秒少于3位不识别问题（issue#1503@Github）
+
+-------------------------------------------------------------------------------------------------------------
+
+# 5.6.2 (2021-03-28)
+
+### 新特性
+* 【core   】     Validator增加车架号(车辆识别码)验证、驾驶证（驾驶证档案编号）的正则校验（pr#280@Gitee）
+* 【core   】     CopyOptions增加propertiesFilter（pr#281@Gitee）
+* 【extra  】     增加Wit模板引擎支持
+* 【core   】     增加DesensitizedUtil（pr#282@Gitee）
+* 【core   】     增加DateTime字符串构造（issue#I3CQZG@Gitee）
+* 【core   】     修改ArrayUtil代码风格（pr#287@Gitee）
+* 【json   】     JSONConfig增加setStripTrailingZeros配置（issue#I3DJI8@Gitee）
+* 【db     】     升级兼容BeeCP3.x
+
+### Bug修复
+* 【core   】     修复FileTypeUtil中OFD格式判断问题（pr#1489@Github）
+* 【core   】     修复CamelCaseLinkedMap和CaseInsensitiveLinkedMap的Linked失效问题（pr#1490@Github）
+* 【core   】     修复UrlPath中=被转义的问题
+
+-------------------------------------------------------------------------------------------------------------
+
+# 5.6.1 (2021-03-18)
+
+### 新特性
+* 【crypto 】     SecureUtil去除final修饰符（issue#1474@Github）
+* 【core   】     IoUtil增加lineIter方法
+* 【core   】     新增函数式懒加载加载器(pr#275@Gitee)
+* 【http   】     UserAgentUtil增加miniProgram判断(issue#1475@Github)
+* 【db     】     增加Ignite数据库驱动识别
+* 【core   】     DateUtil.parse支持带毫秒的UTC时间
+* 【core   】     IdcardUtil.Idcard增加toString（pr#1487@Github）
+* 【core   】     ChineseDate增加getGregorianXXX方法（issue#1481@Github）
+
+### Bug修复
+* 【core   】     修复IoUtil.readBytes的FileInputStream中isClose参数失效问题（issue#I3B7UD@Gitee）
+* 【core   】     修复DataUnit中KB不大写的问题
+* 【json   】     修复JSONUtil.getByPath类型错误问题（issue#I3BSDF@Gitee）
+* 【core   】     修复BeanUtil.toBean提供null未返回null的问题（issue#I3BQPV@Gitee）
+* 【core   】     修复ModifierUtil#modifiersToInt中逻辑判断问题（issue#1486@Github）
+
+-------------------------------------------------------------------------------------------------------------
+
+# 5.6.0 (2021-03-12)
+
+### 新特性
+* 【poi    】     重要：不再兼容POI-3.x，增加兼容POI-5.x（issue#I35J6B@Gitee）
+* 【core   】     FileTypeUtil使用长匹配优先（pr#1457@Github）
+* 【core   】     IterUtil和CollUtil增加isEqualList方法（issue#I3A3PY@Gitee）
+* 【crypto 】     增加PBKDF2（issue#1416@Github）
+* 【core   】     增加FuncKeyMap（issue#1402@Github）
+* 【core   】     增加StrMatcher（issue#1379@Github）
+* 【core   】     NumberUtil增加factorial针对BigInterger方法（issue#1379@Github）
+* 【core   】     TreeNode增加equals方法（issue#1467@Github）
+* 【core   】     增加汉字转阿拉伯数字Convert.chineseToNumber（pr#1469@Github）
+* 【json   】     JSONUtil增加getByPath方法支持默认值（issue#1470@Github）
+* 【crypto 】     SecureUtil增加hmacSha256方法（pr#1473@Github）
+* 【core   】     FileTypeUtil判断流增加文件名辅助判断（pr#1471@Github）
+
+### Bug修复
+* 【socket 】     修复Client创建失败资源未释放问题。
+* 【core   】     修复DataSizeUtil中EB单位错误问题（issue#I39O7I@Gitee）
+* 【core   】     修复BeanDesc.isMatchSetter的ignoreCase未使用问题（issue#I3AXIJ@Gitee）
+* 【core   】     修复CRC16Checksum中（issue#I3AXIJ@Gitee）
+* 【core   】     修复UrlQuery中对空key解析丢失问题（issue#I3B3J6@Gitee）
+
+-------------------------------------------------------------------------------------------------------------
+
+# 5.5.9 (2021-02-26)
+
+### 新特性
+* 【crypto 】     PemUtil.readPemKey支持EC（pr#1366@Github）
+* 【extra  】     Ftp等cd方法增加同步（issue#1397@Github）
+* 【core   】     StrUtil增加endWithAnyIgnoreCase（issue#I37I0B@Gitee）
+* 【crypto 】     Sm2增加getD和getQ方法（issue#I37Z4C@Gitee）
+* 【cache  】     AbstractCache增加keySet方法（issue#I37Z4C@Gitee）
+* 【core   】     NumberWordFormatter增加formatSimple方法（pr#1436@Github）
+* 【crypto 】     增加读取openSSL生成的sm2私钥
+* 【crypto 】     增加众多方法，SM2兼容各类密钥格式（issue#I37Z75@Gitee）
+
+### Bug修复
+* 【json   】     JSONUtil.isJson方法改变trim策略，解决特殊空白符导致判断失败问题
+* 【json   】     修复SQLEXception导致的栈溢出（issue#1399@Github）
+* 【extra  】     修复Ftp中异常参数没有传入问题（issue#1397@Github）
+* 【crypto 】     修复Sm2使用D构造空指针问题（issue#I37Z4C@Gitee）
+* 【poi    】     修复ExcelPicUtil中图表报错问题（issue#I38857@Gitee）
+* 【core   】     修复ListUtil.page方法返回空列表无法编辑问题（issue#1415@Github）
+* 【core   】     修复ListUtil.sub中step不通结果不一致问题（issue#1409@Github）
+* 【db     】     修复Condition转换参数值时未转换数字异常（issue#I38LTM@Gitee）
+
+-------------------------------------------------------------------------------------------------------------
+
+# 5.5.8 (2021-01-30)
 
 ### 新特性
 * 【extra  】     增加自动装配SpringUtil类（pr#1366@Github）

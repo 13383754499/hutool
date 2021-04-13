@@ -1,6 +1,7 @@
 package cn.hutool.core.collection;
 
 import cn.hutool.core.date.DateUtil;
+import cn.hutool.core.lang.Console;
 import cn.hutool.core.lang.Dict;
 import cn.hutool.core.lang.Editor;
 import cn.hutool.core.lang.Filter;
@@ -11,6 +12,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -693,5 +695,15 @@ public class CollUtilTest {
 		}
 
 		Assert.assertEquals(0, CollUtil.page(3, 5, objects).size());
+	}
+
+	@Test
+	public void subtractToListTest(){
+		List<Long> list1 = Arrays.asList(1L, 2L, 3L);
+		List<Long> list2 = Arrays.asList(2L, 3L);
+
+		List<Long> result = CollUtil.subtractToList(list1, list2);
+		Assert.assertEquals(1, result.size());
+		Assert.assertEquals(1L, result.get(0), 1);
 	}
 }

@@ -320,9 +320,9 @@ public class HttpUtilTest {
 	}
 
 	@Test
-	public void tjhrTest(){
-		String url = "https://www.51tjhr.com";
-		final String s = HttpUtil.get(url);
+	@Ignore
+	public void sinajsTest(){
+		final String s = HttpUtil.get("http://hq.sinajs.cn/list=sh600519");
 		Console.log(s);
 	}
 }
