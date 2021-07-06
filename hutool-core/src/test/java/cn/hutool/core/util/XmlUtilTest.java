@@ -1,5 +1,6 @@
 package cn.hutool.core.util;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.resource.ResourceUtil;
 import cn.hutool.core.lang.Console;
@@ -215,6 +216,29 @@ public class XmlUtilTest {
 	}
 
 	@Test
+	public void xmlToBeanTest2(){
+		//issue#1663@Github
+		String xmlStr = "<?xml version=\"1.0\" encoding=\"gbk\" ?><response><code>02</code></response>";
+
+		Document doc = XmlUtil.parseXml(xmlStr);
+
+		// 标准方式
+		Map<String, Object> map = XmlUtil.xmlToMap(doc.getFirstChild());
+		SmsRes res = new SmsRes();
+		BeanUtil.fillBeanWithMap(map, res, true);
+
+		// toBean方式
+		SmsRes res1 = XmlUtil.xmlToBean(doc.getFirstChild(), SmsRes.class);
+
+		Assert.assertEquals(res.toString(), res1.toString());
+	}
+
+	@Data
+	static class SmsRes {
+		private String code;
+	}
+
+	@Test
 	public void cleanCommentTest() {
 		final String xmlContent = "<info><title>hutool</title><!-- 这是注释 --><lang>java</lang></info>";
 		final String ret = XmlUtil.cleanComment(xmlContent);
@@ -262,5 +286,12 @@ public class XmlUtilTest {
 
 		String format = XmlUtil.toStr(xml,"GBK",true);
 		Console.log(format);
+	}
+
+	@Test
+	public void escapeTest(){
+		String a = "<>";
+		final String escape = XmlUtil.escape(a);
+		Console.log(escape);
 	}
 }

@@ -11,6 +11,7 @@ import cn.hutool.core.util.StrUtil;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.math.BigInteger;
+import java.net.Authenticator;
 import java.net.DatagramSocket;
 import java.net.HttpCookie;
 import java.net.IDN;
@@ -543,15 +544,7 @@ public class NetUtil {
 			return null;
 		}
 
-		byte[] mac = null;
-		try {
-			final NetworkInterface networkInterface = NetworkInterface.getByInetAddress(inetAddress);
-			if (null != networkInterface) {
-				mac = networkInterface.getHardwareAddress();
-			}
-		} catch (SocketException e) {
-			throw new UtilException(e);
-		}
+		final byte[] mac = getHardwareAddress(inetAddress);
 		if (null != mac) {
 			final StringBuilder sb = new StringBuilder();
 			String s;
@@ -566,6 +559,39 @@ public class NetUtil {
 			return sb.toString();
 		}
 
+		return null;
+	}
+
+	/**
+	 * 获得本机物理地址
+	 *
+	 * @return 本机物理地址
+	 * @since 5.7.3
+	 */
+	public static byte[] getLocalHardwareAddress() {
+		return getHardwareAddress(getLocalhost());
+	}
+
+	/**
+	 * 获得指定地址信息中的硬件地址
+	 *
+	 * @param inetAddress {@link InetAddress}
+	 * @return 硬件地址
+	 * @since 5.7.3
+	 */
+	public static byte[] getHardwareAddress(InetAddress inetAddress) {
+		if (null == inetAddress) {
+			return null;
+		}
+
+		try {
+			final NetworkInterface networkInterface = NetworkInterface.getByInetAddress(inetAddress);
+			if (null != networkInterface) {
+				return networkInterface.getHardwareAddress();
+			}
+		} catch (SocketException e) {
+			throw new UtilException(e);
+		}
 		return null;
 	}
 
@@ -765,6 +791,27 @@ public class NetUtil {
 		} catch (Exception e) {
 			return false;
 		}
+	}
+
+	/**
+	 * 设置全局验证
+	 *
+	 * @param user 用户名
+	 * @param pass 密码，考虑安全，此处不使用String
+	 * @since 5.7.2
+	 */
+	public static void setGlobalAuthenticator(String user, char[] pass) {
+		setGlobalAuthenticator(new UserPassAuthenticator(user, pass));
+	}
+
+	/**
+	 * 设置全局验证
+	 *
+	 * @param authenticator 验证器
+	 * @since 5.7.2
+	 */
+	public static void setGlobalAuthenticator(Authenticator authenticator) {
+		Authenticator.setDefault(authenticator);
 	}
 	// ----------------------------------------------------------------------------------------- Private method start
 

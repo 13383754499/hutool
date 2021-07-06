@@ -2,7 +2,6 @@ package cn.hutool.core.collection;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.lang.Dict;
-import cn.hutool.core.lang.Filter;
 import cn.hutool.core.map.MapUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -101,7 +100,7 @@ public class CollUtilTest {
 
 		Collection<String> union = CollUtil.union(list1, list2);
 
-		Assert.assertEquals(3, CollUtil.count(union, t -> "b".equals(t)));
+		Assert.assertEquals(3, CollUtil.count(union, "b"::equals));
 	}
 
 	@Test
@@ -110,7 +109,7 @@ public class CollUtilTest {
 		ArrayList<String> list2 = CollUtil.newArrayList("a", "b", "b", "b", "c", "d");
 
 		Collection<String> intersection = CollUtil.intersection(list1, list2);
-		Assert.assertEquals(2, CollUtil.count(intersection, t -> "b".equals(t)));
+		Assert.assertEquals(2, CollUtil.count(intersection, "b"::equals));
 	}
 
 	@Test
@@ -186,6 +185,28 @@ public class CollUtilTest {
 	}
 
 	@Test
+	public void subtractSetTest() {
+		HashMap<String, Object> map1 = MapUtil.newHashMap();
+		HashMap<String, Object> map2 = MapUtil.newHashMap();
+		map1.put("1", "v1");
+		map1.put("2", "v2");
+		map2.put("2", "v2");
+		Collection<String> r2 = CollUtil.subtract(map1.keySet(), map2.keySet());
+		Assert.assertEquals("[1]", r2.toString());
+	}
+
+	@Test
+	public void subtractSetToListTest() {
+		HashMap<String, Object> map1 = MapUtil.newHashMap();
+		HashMap<String, Object> map2 = MapUtil.newHashMap();
+		map1.put("1", "v1");
+		map1.put("2", "v2");
+		map2.put("2", "v2");
+		List<String> r2 = CollUtil.subtractToList(map1.keySet(), map2.keySet());
+		Assert.assertEquals("[1]", r2.toString());
+	}
+
+	@Test
 	public void toMapListAndToListMapTest() {
 		HashMap<String, String> map1 = new HashMap<>();
 		map1.put("a", "值1");
@@ -234,8 +255,9 @@ public class CollUtilTest {
 		map.put("c", "3");
 
 		final String[] result = new String[1];
+		String a = "a";
 		CollUtil.forEach(map, (key, value, index) -> {
-			if ("a".equals(key)) {
+			if (a.equals(key)) {
 				result[0] = value;
 			}
 		});
@@ -255,7 +277,7 @@ public class CollUtilTest {
 	public void filterTest2() {
 		ArrayList<String> list = CollUtil.newArrayList("a", "b", "c");
 
-		ArrayList<String> filtered = CollUtil.filter(list, (Filter<String>) t -> false == "a".equals(t));
+		ArrayList<String> filtered = CollUtil.filter(list, t -> false == "a".equals(t));
 
 		// 原地过滤
 		Assert.assertSame(list, filtered);
@@ -709,7 +731,7 @@ public class CollUtilTest {
 	}
 
 	@Test
-	public void pageTest(){
+	public void pageTest() {
 		List<Dict> objects = CollUtil.newArrayList();
 		for (int i = 0; i < 10; i++) {
 			objects.add(Dict.create().set("name", "姓名：" + i));
@@ -719,7 +741,7 @@ public class CollUtilTest {
 	}
 
 	@Test
-	public void subtractToListTest(){
+	public void subtractToListTest() {
 		List<Long> list1 = Arrays.asList(1L, 2L, 3L);
 		List<Long> list2 = Arrays.asList(2L, 3L);
 

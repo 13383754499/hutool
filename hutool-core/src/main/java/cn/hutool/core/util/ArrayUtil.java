@@ -2,7 +2,6 @@ package cn.hutool.core.util;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.collection.IterUtil;
 import cn.hutool.core.comparator.CompareUtil;
 import cn.hutool.core.exceptions.UtilException;
 import cn.hutool.core.lang.Assert;
@@ -10,6 +9,7 @@ import cn.hutool.core.lang.Editor;
 import cn.hutool.core.lang.Filter;
 import cn.hutool.core.lang.Matcher;
 import cn.hutool.core.map.MapUtil;
+import cn.hutool.core.text.StrJoiner;
 
 import java.lang.reflect.Array;
 import java.nio.ByteBuffer;
@@ -165,7 +165,7 @@ public class ArrayUtil extends PrimitiveArrayUtil {
 	@SuppressWarnings("unchecked")
 	public static <T> T firstMatch(Matcher<T> matcher, T... array) {
 		final int index = matchIndex(matcher, array);
-		if(index < 0){
+		if (index < 0) {
 			return null;
 		}
 
@@ -183,9 +183,24 @@ public class ArrayUtil extends PrimitiveArrayUtil {
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T> int matchIndex(Matcher<T> matcher, T... array) {
+		return matchIndex(matcher, 0, array);
+	}
+
+	/**
+	 * 返回数组中第一个匹配规则的值的位置
+	 *
+	 * @param <T>               数组元素类型
+	 * @param matcher           匹配接口，实现此接口自定义匹配规则
+	 * @param beginIndexInclude 检索开始的位置
+	 * @param array             数组
+	 * @return 匹配到元素的位置，-1表示未匹配到
+	 * @since 5.7.3
+	 */
+	@SuppressWarnings("unchecked")
+	public static <T> int matchIndex(Matcher<T> matcher, int beginIndexInclude, T... array) {
 		if (isNotEmpty(array)) {
-			for(int i = 0; i < array.length; i++){
-				if(matcher.match(array[i])){
+			for (int i = beginIndexInclude; i < array.length; i++) {
+				if (matcher.match(array[i])) {
 					return i;
 				}
 			}
@@ -587,6 +602,7 @@ public class ArrayUtil extends PrimitiveArrayUtil {
 	 * @param <T>    数组元素类型
 	 * @param array  数组
 	 * @param editor 编辑器接口，{@code null}返回原集合
+	 * @return 编辑后的数组
 	 * @since 5.3.3
 	 */
 	public static <T> T[] edit(T[] array, Editor<T> editor) {
@@ -621,7 +637,7 @@ public class ArrayUtil extends PrimitiveArrayUtil {
 	 * @since 3.2.1
 	 */
 	public static <T> T[] filter(T[] array, Filter<T> filter) {
-		if(null == array || null == filter){
+		if (null == array || null == filter) {
 			return array;
 		}
 		return edit(array, t -> filter.accept(t) ? t : null);
@@ -730,6 +746,20 @@ public class ArrayUtil extends PrimitiveArrayUtil {
 	/**
 	 * 返回数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
 	 *
+	 * @param <T>               数组类型
+	 * @param array             数组
+	 * @param value             被检查的元素
+	 * @param beginIndexInclude 检索开始的位置
+	 * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
+	 * @since 3.0.7
+	 */
+	public static <T> int indexOf(T[] array, Object value, int beginIndexInclude) {
+		return matchIndex((obj) -> ObjectUtil.equal(value, obj), beginIndexInclude, array);
+	}
+
+	/**
+	 * 返回数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
+	 *
 	 * @param <T>   数组类型
 	 * @param array 数组
 	 * @param value 被检查的元素
@@ -737,7 +767,7 @@ public class ArrayUtil extends PrimitiveArrayUtil {
 	 * @since 3.0.7
 	 */
 	public static <T> int indexOf(T[] array, Object value) {
-		return matchIndex((obj)-> ObjectUtil.equal(value, obj), array);
+		return matchIndex((obj) -> ObjectUtil.equal(value, obj), array);
 	}
 
 	/**
@@ -769,8 +799,25 @@ public class ArrayUtil extends PrimitiveArrayUtil {
 	 * @since 3.0.7
 	 */
 	public static <T> int lastIndexOf(T[] array, Object value) {
-		if (null != array) {
-			for (int i = array.length - 1; i >= 0; i--) {
+		if (isEmpty(array)) {
+			return INDEX_NOT_FOUND;
+		}
+		return lastIndexOf(array, value, array.length - 1);
+	}
+
+	/**
+	 * 返回数组中指定元素所在最后的位置，未找到返回{@link #INDEX_NOT_FOUND}
+	 *
+	 * @param <T>        数组类型
+	 * @param array      数组
+	 * @param value      被检查的元素
+	 * @param endInclude 查找方式为从后向前查找，查找的数组结束位置，一般为array.length-1
+	 * @return 数组中指定元素所在位置，未找到返回{@link #INDEX_NOT_FOUND}
+	 * @since 5.7.3
+	 */
+	public static <T> int lastIndexOf(T[] array, Object value, int endInclude) {
+		if (isNotEmpty(array)) {
+			for (int i = endInclude; i >= 0; i--) {
 				if (ObjectUtil.equal(value, array[i])) {
 					return i;
 				}
@@ -1114,38 +1161,24 @@ public class ArrayUtil extends PrimitiveArrayUtil {
 	/**
 	 * 以 conjunction 为分隔符将数组转换为字符串
 	 *
-	 * @param <T>         被处理的集合
-	 * @param array       数组
-	 * @param conjunction 分隔符
-	 * @param prefix      每个元素添加的前缀，null表示不添加
-	 * @param suffix      每个元素添加的后缀，null表示不添加
+	 * @param <T>       被处理的集合
+	 * @param array     数组
+	 * @param delimiter 分隔符
+	 * @param prefix    每个元素添加的前缀，null表示不添加
+	 * @param suffix    每个元素添加的后缀，null表示不添加
 	 * @return 连接后的字符串
 	 * @since 4.0.10
 	 */
-	public static <T> String join(T[] array, CharSequence conjunction, String prefix, String suffix) {
+	public static <T> String join(T[] array, CharSequence delimiter, String prefix, String suffix) {
 		if (null == array) {
 			return null;
 		}
 
-		final StringBuilder sb = new StringBuilder();
-		boolean isFirst = true;
-		for (T item : array) {
-			if (isFirst) {
-				isFirst = false;
-			} else {
-				sb.append(conjunction);
-			}
-			if (ArrayUtil.isArray(item)) {
-				sb.append(join(ArrayUtil.wrap(item), conjunction, prefix, suffix));
-			} else if (item instanceof Iterable<?>) {
-				sb.append(CollUtil.join((Iterable<?>) item, conjunction, prefix, suffix));
-			} else if (item instanceof Iterator<?>) {
-				sb.append(IterUtil.join((Iterator<?>) item, conjunction, prefix, suffix));
-			} else {
-				sb.append(StrUtil.wrap(StrUtil.toString(item), prefix, suffix));
-			}
-		}
-		return sb.toString();
+		return StrJoiner.of(delimiter, prefix, suffix)
+				// 每个元素都添加前后缀
+				.setWrapElement(true)
+				.append(array)
+				.toString();
 	}
 
 	/**
@@ -1159,26 +1192,7 @@ public class ArrayUtil extends PrimitiveArrayUtil {
 	 * @since 5.3.3
 	 */
 	public static <T> String join(T[] array, CharSequence conjunction, Editor<T> editor) {
-		if (null == array) {
-			return null;
-		}
-
-		final StringBuilder sb = new StringBuilder();
-		boolean isFirst = true;
-		for (T item : array) {
-			if (isFirst) {
-				isFirst = false;
-			} else {
-				sb.append(conjunction);
-			}
-			if (null != editor) {
-				item = editor.edit(item);
-			}
-			if (null != item) {
-				sb.append(StrUtil.toString(item));
-			}
-		}
-		return sb.toString();
+		return StrJoiner.of(conjunction).append(array, (t) -> String.valueOf(editor.edit(t))).toString();
 	}
 
 	/**
@@ -1189,39 +1203,14 @@ public class ArrayUtil extends PrimitiveArrayUtil {
 	 * @return 连接后的字符串
 	 */
 	public static String join(Object array, CharSequence conjunction) {
-		if(null == array){
-			throw new NullPointerException("Array must be not null!");
+		if (null == array) {
+			return null;
 		}
 		if (false == isArray(array)) {
 			throw new IllegalArgumentException(StrUtil.format("[{}] is not a Array!", array.getClass()));
 		}
 
-		final Class<?> componentType = array.getClass().getComponentType();
-		if (componentType.isPrimitive()) {
-			final String componentTypeName = componentType.getName();
-			switch (componentTypeName) {
-				case "long":
-					return join((long[]) array, conjunction);
-				case "int":
-					return join((int[]) array, conjunction);
-				case "short":
-					return join((short[]) array, conjunction);
-				case "char":
-					return join((char[]) array, conjunction);
-				case "byte":
-					return join((byte[]) array, conjunction);
-				case "boolean":
-					return join((boolean[]) array, conjunction);
-				case "float":
-					return join((float[]) array, conjunction);
-				case "double":
-					return join((double[]) array, conjunction);
-				default:
-					throw new UtilException("Unknown primitive type: [{}]", componentTypeName);
-			}
-		} else {
-			return join((Object[]) array, conjunction);
-		}
+		return StrJoiner.of(conjunction).append(array).toString();
 	}
 
 	/**
@@ -1715,17 +1704,31 @@ public class ArrayUtil extends PrimitiveArrayUtil {
 	 * @since 5.4.8
 	 */
 	public static <T> int indexOfSub(T[] array, T[] subArray) {
+		return indexOfSub(array, 0, subArray);
+	}
+
+	/**
+	 * 查找子数组的位置
+	 *
+	 * @param array        数组
+	 * @param beginInclude 查找开始的位置（包含）
+	 * @param subArray     子数组
+	 * @param <T>          数组元素类型
+	 * @return 子数组的开始位置，即子数字第一个元素在数组中的位置
+	 * @since 5.4.8
+	 */
+	public static <T> int indexOfSub(T[] array, int beginInclude, T[] subArray) {
 		if (isEmpty(array) || isEmpty(subArray) || subArray.length > array.length) {
 			return INDEX_NOT_FOUND;
 		}
-		int firstIndex = indexOf(array, subArray[0]);
+		int firstIndex = indexOf(array, subArray[0], beginInclude);
 		if (firstIndex < 0 || firstIndex + subArray.length > array.length) {
 			return INDEX_NOT_FOUND;
 		}
 
 		for (int i = 0; i < subArray.length; i++) {
 			if (false == ObjectUtil.equal(array[i + firstIndex], subArray[i])) {
-				return INDEX_NOT_FOUND;
+				return indexOfSub(array, firstIndex + 1, subArray);
 			}
 		}
 
@@ -1742,7 +1745,24 @@ public class ArrayUtil extends PrimitiveArrayUtil {
 	 * @since 5.4.8
 	 */
 	public static <T> int lastIndexOfSub(T[] array, T[] subArray) {
-		if (isEmpty(array) || isEmpty(subArray) || subArray.length > array.length) {
+		if (isEmpty(array) || isEmpty(subArray)) {
+			return INDEX_NOT_FOUND;
+		}
+		return lastIndexOfSub(array, array.length - 1, subArray);
+	}
+
+	/**
+	 * 查找最后一个子数组的开始位置
+	 *
+	 * @param array    数组
+	 * @param endInclude 查找结束的位置（包含）
+	 * @param subArray 子数组
+	 * @param <T>      数组元素类型
+	 * @return 最后一个子数组的开始位置，即子数字第一个元素在数组中的位置
+	 * @since 5.4.8
+	 */
+	public static <T> int lastIndexOfSub(T[] array, int endInclude, T[] subArray) {
+		if (isEmpty(array) || isEmpty(subArray) || subArray.length > array.length || endInclude < 0) {
 			return INDEX_NOT_FOUND;
 		}
 
@@ -1753,7 +1773,7 @@ public class ArrayUtil extends PrimitiveArrayUtil {
 
 		for (int i = 0; i < subArray.length; i++) {
 			if (false == ObjectUtil.equal(array[i + firstIndex], subArray[i])) {
-				return INDEX_NOT_FOUND;
+				return lastIndexOfSub(array, firstIndex - 1, subArray);
 			}
 		}
 

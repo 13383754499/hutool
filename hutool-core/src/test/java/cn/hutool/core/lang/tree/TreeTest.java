@@ -28,7 +28,7 @@ public class TreeTest {
 
 
 	@Test
-	public void sampleTree() {
+	public void sampleTreeTest() {
 		List<Tree<String>> treeList = TreeUtil.build(nodeList, "0");
 		for (Tree<String> tree : treeList) {
 			Assert.assertNotNull(tree);
@@ -43,14 +43,14 @@ public class TreeTest {
 	}
 
 	@Test
-	public void tree() {
+	public void treeTest() {
 
 		//配置
 		TreeNodeConfig treeNodeConfig = new TreeNodeConfig();
 		// 自定义属性名 都要默认值的
 		treeNodeConfig.setWeightKey("order");
 		treeNodeConfig.setIdKey("rid");
-		treeNodeConfig.setDeep(3);
+		treeNodeConfig.setDeep(2);
 
 		//转换器
 		List<Tree<String>> treeNodes = TreeUtil.build(nodeList, "0", treeNodeConfig,
